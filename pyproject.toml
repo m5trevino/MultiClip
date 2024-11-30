@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "multiclip"
+version = "1.0"
+description = "Create a Copy/Paste function with unique hotkeys that stores distinct text in up to 10 slots (clipboards). Each slot can be pasted using an assigned hotkey."
+authors = ["Matthew Trevino"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "*"
+PyAutoGUI = "*"
+pyperclip = "*"
+keyboard = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
