@@ -9,7 +9,7 @@ import sys
 import tkinter as tk
 
 # Paths
-dict_file = "/home/flintx/multiclip/clipboard_dict.json"
+dict_file = "/home/flintx/multiclip/clipboard_dict.json"  # Use an absolute path for consistency
 
 # Load the dictionary from the file if it exists
 def load_dictionary():
