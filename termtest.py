@@ -65,6 +65,35 @@ def paste_from_dictionary(slot_name):
     except Exception as e:
         print(f"Error pasting from clipboard: {e}")
 
+# Paste from clipboard slot using Shift+Insert (for terminal)
+def paste_terminal(slot_name):
+    try:
+        dictionary = load_dictionary()
+        if slot_name in dictionary:
+            content_to_paste = dictionary[slot_name]
+            # Save original clipboard content
+            original_clipboard = pyperclip.paste()
+
+            # Copy slot content to clipboard
+            pyperclip.copy(content_to_paste)
+            time.sleep(0.1)  # Delay to ensure clipboard updates
+
+            # Paste using Shift+Insert (works better in terminals)
+            pyautogui.hotkey("shift", "insert")
+
+            # Show notification
+            show_toast("Terminal Paste", f"Slot {slot_name[-1]} content pasted to terminal.")
+            print(f"Terminal paste from {slot_name}: {content_to_paste}")
+
+            # Restore original clipboard after a short delay
+            time.sleep(0.3)
+            pyperclip.copy(original_clipboard)
+        else:
+            show_toast("Slot Empty", f"No content found in {slot_name}.")
+            print(f"No content found in {slot_name}.")
+    except Exception as e:
+        print(f"Error pasting to terminal: {e}")
+
 # Transfer slot content to default clipboard
 def transfer_to_default(slot_name):
     try:
@@ -108,11 +137,34 @@ def register_hotkeys():
     """
     Registers all hotkeys for the application.
     """
+    # Map of Alt+letter keys to slot numbers
+    alt_letter_map = {
+        'q': 0,  # Alt+Q for slot_0
+        'w': 1,  # Alt+W for slot_1
+        'e': 2,  # Alt+E for slot_2
+        'r': 3,  # Alt+R for slot_3
+        't': 4,  # Alt+T for slot_4
+        'y': 5,  # Alt+Y for slot_5
+        'u': 6,  # Alt+U for slot_6
+        'i': 7,  # Alt+I for slot_7
+        'o': 8,  # Alt+O for slot_8
+        'p': 9   # Alt+P for slot_9
+    }
+
     for i in range(10):  # Slots 0-9
         slot_name = f"slot_{i}"
         keyboard.add_hotkey(f"ctrl+{i}", add_to_dictionary, args=[slot_name])  # Copy hotkeys
         keyboard.add_hotkey(f"ctrl+shift+{i}", paste_from_dictionary, args=[slot_name])  # Paste hotkeys
         keyboard.add_hotkey(f"ctrl+alt+{i}", transfer_to_default, args=[slot_name])  # Transfer hotkeys
+
+    # Register Alt+letter hotkeys for terminal pasting
+    for letter, slot_num in alt_letter_map.items():
+        slot_name = f"slot_{slot_num}"
+        try:
+            keyboard.add_hotkey(f"alt+{letter}", paste_terminal, args=[slot_name])
+            print(f"Registered Alt+{letter.upper()} for terminal paste from {slot_name}")
+        except Exception as e:
+            print(f"Error registering Alt+{letter} hotkey: {e}")
 
     # Show clipboard UI hotkey
     keyboard.add_hotkey("ctrl+shift+u", show_clipboard_ui)
@@ -128,9 +180,25 @@ if __name__ == "__main__":
     print("- Ctrl + 1-0: Copy to slot 1-0")
     print("- Ctrl + Shift + 1-0: Paste from slot 1-0")
     print("- Ctrl + Alt + 1-0: Transfer slot content to default clipboard")
+    print("- Alt + Q: Terminal paste from slot_0")
+    print("- Alt + W: Terminal paste from slot_1")
+    print("- Alt + E: Terminal paste from slot_2")
+    print("- Alt + R: Terminal paste from slot_3")
+    print("- Alt + T: Terminal paste from slot_4")
+    print("- Alt + Y: Terminal paste from slot_5")
+    print("- Alt + U: Terminal paste from slot_6")
+    print("- Alt + I: Terminal paste from slot_7")
+    print("- Alt + O: Terminal paste from slot_8")
+    print("- Alt + P: Terminal paste from slot_9")
     print("- Ctrl + Shift + U: Show clipboard UI")
     print("- Reserved: Ctrl + Shift + F1, F2, F3 for future toast position handling")
     register_hotkeys()
     print("Press Ctrl+C to exit.")
-    while True:
-        time.sleep(1)
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Exiting...")
+    finally:
+        keyboard.unhook_all()
+        print("Hotkeys unregistered")
