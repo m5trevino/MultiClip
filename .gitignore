@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+venv/
+backup/
+*.log
+.DS_Store
+yrotsih*.txt
+*.token
+*.key
