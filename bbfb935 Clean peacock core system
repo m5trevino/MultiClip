@@ -1,0 +1,11 @@
+bbfb935 Clean peacock core system
+A       core/modash.py
+A       core/peamcp.py
+A       core/spin.py
+A       core/xedit.py
+
+
+git show bbfb935:core/modash.py > core/modashr.py  
+git show bbfb935:core/peamcp.py > core/peamcpr.py
+git show bbfb935:core/spin.py > core/spinr.py
+git show bbfb935:core/xedit.py > core/xeditr.py

@@ -1,11 +1,11 @@
 {
-    "slot_1": "####START OF DOCUMENT####\n",
-    "slot_2": "####1/4 MARKER####\n",
-    "slot_3": "####3/4 MARKER####\n",
-    "slot_4": "####END OF DOCUMENT####\n",
-    "slot_5": "9.3 GB",
-    "slot_6": "6.3 GB",
-    "slot_7": "2.4 GB",
-    "slot_8": "5.5 GB",
-    "slot_9": "10 GB"
+    "slot_1": "git clone --branch=release https://github.com/bghira/SimpleTuner.git\n",
+    "slot_2": "https://console.groq.com/docs/agentic-tooling/compound-beta-mini",
+    "slot_3": "https://console.groq.com/docs/model/llama-prompt-guard-2-22m",
+    "slot_4": "https://console.groq.com/docs/model/llama-prompt-guard-2-86m",
+    "slot_5": "https://console.groq.com/docs/agentic-tooling/compound-beta",
+    "slot_6": "https://console.groq.com/docs/agentic-tooling/compound-beta-mini",
+    "slot_7": "https://huggingface.co/openai/whisper-large-v3",
+    "slot_8": "https://huggingface.co/openai/whisper-large-v3-turbo",
+    "slot_9": "https://huggingface.co/distil-whisper/distil-large-v3"
 }
