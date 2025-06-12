@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Dict, Any, Callable, Optional
 import threading
+from diff_marker.diff_interface import DiffInterface
 
 class SlotDisplay(ttk.Frame):
     def __init__(self, parent, slot_id: int, on_select: Callable):
@@ -92,7 +93,14 @@ class MainWindow:
         self.slot_displays: Dict[int, SlotDisplay] = {}
         self.current_mode = "Multiclip"
         
+        # Add clipboard manager reference
+        self.clipboard_manager = None
+        
         self._create_ui()
+    
+    def set_clipboard_manager(self, clipboard_manager):
+        """Set the clipboard manager reference"""
+        self.clipboard_manager = clipboard_manager
     
     def _create_ui(self):
         # Main menu
@@ -117,7 +125,8 @@ class MainWindow:
         mode_frame = ttk.Frame(toolbar)
         mode_frame.pack(side='left', padx=10)
         
-        for mode in ["Multiclip", "Orderly", "Snippers"]:
+        # Updated mode list to include Diff-Marker
+        for mode in ["Multiclip", "Orderly", "Snippers", "Diff-Marker"]:
             btn = ttk.Radiobutton(mode_frame, text=mode, variable=self.mode_var,
                                  value=mode, command=self._on_mode_change)
             btn.pack(side='left', padx=5)
@@ -221,12 +230,26 @@ Ctrl+Alt+0-9: Transfer to clipboard"""
         ttk.Button(self.snippers_panel, text="Save New Snippet",
                   command=self._open_snippers_save).pack(pady=5)
         
+        # NEW: Diff-Marker panel
+        self.diff_marker_panel = ttk.Frame(self.right_panel)
+        
+        ttk.Label(self.diff_marker_panel, text="Diff-Marker Mode", 
+                 font=('Arial', 12, 'bold')).pack(pady=10)
+        
+        # Create the diff interface
+        self.diff_interface = DiffInterface(self.diff_marker_panel, self.clipboard_manager)
+        self.diff_interface.pack(fill='both', expand=True)
+        
+        # Set up status callback
+        self.diff_interface.set_status_callback(self.update_status)
+        
         # Show initial panel
         self._show_mode_panel("Multiclip")
     
     def _show_mode_panel(self, mode: str):
         # Hide all panels
-        for panel in [self.multiclip_panel, self.orderly_panel, self.snippers_panel]:
+        for panel in [self.multiclip_panel, self.orderly_panel, 
+                     self.snippers_panel, self.diff_marker_panel]:
             panel.pack_forget()
         
         # Show selected panel
@@ -236,6 +259,11 @@ Ctrl+Alt+0-9: Transfer to clipboard"""
             self.orderly_panel.pack(fill='both', expand=True)
         elif mode == "Snippers":
             self.snippers_panel.pack(fill='both', expand=True)
+        elif mode == "Diff-Marker":
+            # Update clipboard manager reference if needed
+            if self.clipboard_manager:
+                self.diff_interface.clipboard_manager = self.clipboard_manager
+            self.diff_marker_panel.pack(fill='both', expand=True)
     
     def _on_mode_change(self):
         new_mode = self.mode_var.get()
